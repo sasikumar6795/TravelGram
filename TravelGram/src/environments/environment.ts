@@ -11,7 +11,7 @@ export const environment = {
     storageBucket: "angularprojectgithub.appspot.com",
     messagingSenderId: "902665185417",
     appId: "1:902665185417:web:7b841f58bed5c3f3d57e58"
-  };
+  }
 };
 
 /*
