@@ -4,6 +4,7 @@
 
 @import "~ngx-toastr/toastr";
 
+
 body {
     position: relative;
     min-width: 100%;
