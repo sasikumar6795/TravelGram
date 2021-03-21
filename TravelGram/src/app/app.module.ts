@@ -13,6 +13,7 @@ import { PagenotfoundComponent } from './pages/pagenotfound/pagenotfound.compone
 import { SigninComponent } from './pages/signin/signin.component';
 import { SignupComponent } from './pages/signup/signup.component';
 
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -29,6 +30,7 @@ import { SignupComponent } from './pages/signup/signup.component';
   imports: [
     BrowserModule,
     AppRoutingModule
+    
   ],
   providers: [],
   bootstrap: [AppComponent]
