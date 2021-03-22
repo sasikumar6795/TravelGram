@@ -17,6 +17,7 @@ import { AngularFireDatabase } from '@angular/fire/database';
 
 //browser image resizer
 import { readAndCompressImage } from 'browser-image-resizer';
+import { imageConfig } from 'src/app/utils/config';
 
 @Component({
   selector: 'app-signup',
@@ -26,7 +27,7 @@ import { readAndCompressImage } from 'browser-image-resizer';
 export class SignupComponent implements OnInit {
   picture: string = '../../assets/img.png';
 
-  uploadPercent!: number;
+  uploadPercent: number | undefined;
 
   constructor(
     private authService: AuthService,
@@ -38,21 +39,69 @@ export class SignupComponent implements OnInit {
 
   ngOnInit(): void {}
 
-
-  onSubmit (f: NgForm)
-  {
-    const {email, password, username, country, bio, name} = f.form.value;
+  onSubmit(f: NgForm) {
+    const { email, password, username, country, bio, name } = f.form.value;
 
     // further validation like username has to be unique , password must be 8 characters like that
 
-    this.authService.signUp(email, password)
-    .then( (res) => {
-      console.log("response of auth service user object",res);
-      
+    this.authService
+      .signUp(email, password)
+      .then((res) => {
+        console.log('response of auth service user object', res);
 
-     // this.db.object(`/users/${uid}`);
-    })
-    .then()
+        const uid = res.user;
 
+        this.db.object(`/users/${uid}`).set({
+          id: uid,
+          name: name,
+          email: email,
+          instaId: username,
+          country: country,
+          bio: bio,
+          picture: this.picture,
+        });
+      })
+      .then(() => {
+        this.router.navigateByUrl('/');
+        this.toastr.success('Sign up success');
+      })
+      .catch((err) => {
+        console.log(err);
+        this.toastr.error('something went wrong in signup');
+      });
+  }
+
+  async uploadFile(event : any)
+  {
+    const file =  event.target.files[0];
+
+    let resizeImage =  await readAndCompressImage(file, imageConfig);
+
+    const filePath =  file.name // rename the image with uid 
+
+    const fileRef =  this.storage.ref(filePath);
+
+    const task =  this.storage.upload(filePath, resizeImage); 
+
+    task.percentageChanges().subscribe(
+      (percentage) => {
+        this.uploadPercent = percentage;
+      }
+    )
+
+    task.snapshotChanges()
+    .pipe(
+      finalize(
+        () => {
+          fileRef.getDownloadURL().subscribe(
+            (url) => {
+              this.picture =url;
+              this.toastr.success('image uploaded successfully');
+            }
+          )
+        }
+      )
+    )
+    .subscribe();
   }
 }
