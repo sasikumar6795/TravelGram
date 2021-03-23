@@ -13,7 +13,19 @@ import { AddpostComponent } from './pages/addpost/addpost.component';
 import { PagenotfoundComponent } from './pages/pagenotfound/pagenotfound.component';
 import { SigninComponent } from './pages/signin/signin.component';
 import { SignupComponent } from './pages/signup/signup.component';
+
+//firebase
 import { environment } from 'src/environments/environment';
+import { AngularFireModule } from '@angular/fire';
+import { AngularFireAuthModule } from '@angular/fire/auth';
+import { AngularFireDatabaseModule } from '@angular/fire/database';
+import { AngularFireStorageModule } from '@angular/fire/storage';
+
+//animations
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations'
+import { ToastrModule } from 'ngx-toastr';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+
 
 @NgModule({
   declarations: [
@@ -28,7 +40,22 @@ import { environment } from 'src/environments/environment';
     SigninComponent,
     SignupComponent,
   ],
-  imports: [BrowserModule, AppRoutingModule, FormsModule],
+  imports: [BrowserModule, 
+    AppRoutingModule, 
+    FormsModule,
+
+    FontAwesomeModule,
+
+    ToastrModule.forRoot(),
+    BrowserAnimationsModule,
+
+    
+    AngularFireModule.initializeApp(environment.firebase),
+    AngularFireAuthModule,
+    AngularFireDatabaseModule,
+    AngularFireStorageModule
+
+  ],
   providers: [],
   bootstrap: [AppComponent],
 })
