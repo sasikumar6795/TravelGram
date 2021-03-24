@@ -27,7 +27,7 @@ import { imageConfig } from 'src/app/utils/config';
 export class SignupComponent implements OnInit {
   picture: string = '../../assets/img.png';
 
-  uploadPercent: number | undefined;
+  uploadPercent: number;
 
   constructor(
     private authService: AuthService,
@@ -49,7 +49,7 @@ export class SignupComponent implements OnInit {
       .then((res) => {
         console.log('response of auth service user object', res);
 
-        const uid = res.user;
+        const {uid} = res.user;
 
         this.db.object(`/users/${uid}`).set({
           id: uid,

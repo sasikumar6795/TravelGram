@@ -14,13 +14,15 @@ export class HeaderComponent implements OnInit {
     private toastrService: ToastrService,
     private router: Router
   ) {
-    authService.getUser().subscribe((user) => {
+  
+  }
+
+  ngOnInit(): void {
+    this.authService.getUser().subscribe((user) => {
       console.log('USER IS :', user);
       this.email = user?.email;
     });
   }
-
-  ngOnInit(): void {}
 
   async handleSignOut() {
     try {
