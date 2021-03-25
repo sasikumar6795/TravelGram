@@ -27,7 +27,7 @@ const routes: Routes = [
     data: {authGuardPipe: redirectLoggedInToHome }
   },
   {
-    path: 'addpost',
+    path: 'addPost',
     component:AddpostComponent,
     canActivate: [AngularFireAuthGuard],
     data: {authGuardPipe: redirectUnauthorizedToLogin }
