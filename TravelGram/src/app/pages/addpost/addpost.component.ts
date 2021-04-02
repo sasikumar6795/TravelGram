@@ -1,7 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 
-
-
 //angular router
 import { Router } from '@angular/router';
 
@@ -42,14 +40,20 @@ export class AddpostComponent implements OnInit {
     private router: Router,
     private db: AngularFireDatabase,
     private storage: AngularFireStorage
-  ) {
+  ) {}
+  ngOnInit(): void {
     this.authService.getUser().subscribe((user) => {
-      this.db.object(`/users/${user.uid}`).valueChanges().subscribe();
+      this.db.object(`/users/${user.uid}`).valueChanges().subscribe(
+        (user)=>{
+          this.user=user;
+        }
+      );
     });
   }
 
   onSubmit() {
     const uid = uuidv4();
+    console.log(uid);
 
     this.db
       .object(`/posts/${uid}`)
@@ -59,7 +63,7 @@ export class AddpostComponent implements OnInit {
         description: this.description,
         picture: this.picture,
         by: this.user.name,
-        instaId: this.user.username,
+        instaId: this.user.instaId,
         date: Date.now(),
       })
       .then(() => {
@@ -72,41 +76,31 @@ export class AddpostComponent implements OnInit {
       });
   }
 
-  ngOnInit(): void {}
-
-  async uploadFile(event)
-  {
-   
-   
+  async uploadFile(event) {
     const file = event.target.files[0];
 
-    let resiedImage =  await readAndCompressImage(file, imageConfig);
+    let resiedImage = await readAndCompressImage(file, imageConfig);
 
-    const filePath =  file.name;
+    const filePath = file.name;
 
-    const fileRef =  this.storage.ref(filePath);
+    const fileRef = this.storage.ref(filePath);
 
-    const task =  this.storage.upload(filePath, resiedImage);
+    const task = this.storage.upload(filePath, resiedImage);
 
     task.percentageChanges().subscribe((percentage) => {
-      this.uploadPercent=percentage;
-    })
+      this.uploadPercent = percentage;
+    });
 
-    task.snapshotChanges()
-    .pipe(
-      finalize(
-        ()=> {
-          fileRef.getDownloadURL().subscribe(
-            (url) =>{
-              this.picture=url;
-              this.toastr.success('image uploaded successfully');
-            }
-          )
-        }
+    task
+      .snapshotChanges()
+      .pipe(
+        finalize(() => {
+          fileRef.getDownloadURL().subscribe((url) => {
+            this.picture = url;
+            this.toastr.success('image uploaded successfully');
+          });
+        })
       )
-    )
-    .subscribe(
-
-    )
+      .subscribe();
   }
 }
