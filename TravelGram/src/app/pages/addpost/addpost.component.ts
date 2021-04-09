@@ -77,6 +77,10 @@ export class AddpostComponent implements OnInit {
   }
 
   async uploadFile(event) {
+
+    console.log("event info",event);
+    console.log("event info2",event.target);
+    console.log("event info3",event.target.files);
     const file = event.target.files[0];
 
     let resiedImage = await readAndCompressImage(file, imageConfig);
